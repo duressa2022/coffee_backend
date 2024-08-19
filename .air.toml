@@ -1,0 +1,12 @@
+# Config file for Air
+[build]
+# Command to build the application
+cmd = "go build -o ./tmp/main.exe ./delivery/main.go"
+# Directory to store the built binary
+bin = "tmp/main.exe"
+# Include these directories for watching changes
+include_ext = ["go", "tpl", "tmpl", "html"]
+
+[run]
+# Command to run the built binary
+cmd = "tmp\\main.exe"
