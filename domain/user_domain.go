@@ -16,6 +16,7 @@ type User struct {
 	Password  string               `json:"password" bson:"password,omitempty"`
 	Favorite  []*Coffee            `json:"favorite" bson:"favorite"`
 	Carts     []*Coffee            `json:"carts" bson:"carts"`
+	Role      string               `json:"role" bson:"role"`
 }
 
 // interface contaning the methods for working with user

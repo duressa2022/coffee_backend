@@ -3,6 +3,8 @@ package usecase
 import (
 	infrastructure "coffee/project/Infrastructure"
 	repository "coffee/project/Repository"
+	"coffee/project/domain"
+	"errors"
 )
 
 // struct for working on the login case
@@ -18,22 +20,31 @@ func NewLoginUseCase(login *repository.UserRepository) *LoginUseCase {
 }
 
 // method for logging into the system
-func (l *LoginUseCase) Login(email string, password string) (string, error) {
+func (l *LoginUseCase) Login(login *domain.Login) (string, string, error) {
 	condition := map[string]interface{}{
-		"email": email,
+		"email": login.Email,
 	}
-	user, err := l.login.GetUserByCondition(condition)
+	user, _ := l.login.GetUserByCondition(condition)
+
+	if user == nil {
+		return "", "", errors.New("error of credential")
+	}
+	err := infrastructure.ComparePassword(user.Password, login.Password)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	err = infrastructure.ComparePassword(user.Password, password)
+	var loginClaims domain.UserClaims
+	loginClaims.Id = user.Id.Hex()
+	loginClaims.Role = user.Role
+
+	accessToken, err := infrastructure.GenerateAccessToken(&loginClaims)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	token, err := infrastructure.GenerateToken(user)
+	refreshToken, err := infrastructure.GenerateRefreshToken(&loginClaims)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return token, nil
+	return accessToken, refreshToken, nil
 
 }
