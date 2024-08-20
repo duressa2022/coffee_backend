@@ -50,9 +50,15 @@ func Setup(user *repository.UserRepository) *gin.Engine {
 
 	loginUseCase := usecase.NewLoginUseCase(user)
 	loginController := controllers.NewController(loginUseCase)
+
+	profileUsecase := usecase.NewProfileUseCase(user)
+	profileController := controllers.NewProfileController(profileUsecase)
+
 	routers.SetUpRoute(router,
 		controller,
-		loginController)
+		loginController,
+		profileController,
+	)
 	return router
 
 }

@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	infrastructure "coffee/project/Infrastructure"
 	repository "coffee/project/Repository"
 	"coffee/project/domain"
 )
@@ -36,13 +35,6 @@ func (p *ProfileUseCase) AddingProfile(id string, profile *domain.Profile) error
 	if profile.Image != "" {
 		user.Photo = profile.Image
 	}
-	if profile.Password != "" {
-		hashed, err := infrastructure.HashPassword(profile.Password)
-		if err != nil {
-			return err
-		}
-		user.Password = hashed
-	}
 
 	return nil
 }
@@ -58,6 +50,5 @@ func (p *ProfileUseCase) GettingProfile(id string) (*domain.Profile, error) {
 	profile.LastName = user.LastName
 	profile.Email = user.Email
 	profile.Image = user.Photo
-	profile.Password = "#############"
 	return &profile, nil
 }
